@@ -15,11 +15,31 @@ router.get("/", (req, res) => {
 
 //===========================SELECT===========================
 
-//Get all products (1) --> using Promise
-router.get("/products", (req, res) => {
-    Product.find({})
-    .then(data => res.json(data))
-    .catch(err => res.status(500).json({error: err.message}));
+//Get all products (1) --> support optional filters via query string
+// Example: /products?name=hee&minPrice=10000&maxPrice=25000
+router.get("/products", async (req, res) => {
+    try {
+        const { name, minPrice, maxPrice } = req.query;
+        const filter = {};
+
+        if (name) {
+            // partial, case-insensitive match
+            filter.name = { $regex: String(name), $options: 'i' };
+        }
+
+        if (minPrice !== undefined || maxPrice !== undefined) {
+            filter.price = {};
+            if (minPrice !== undefined && minPrice !== '') filter.price.$gte = Number(minPrice);
+            if (maxPrice !== undefined && maxPrice !== '') filter.price.$lte = Number(maxPrice);
+            // if price filter ended up empty, remove it
+            if (Object.keys(filter.price).length === 0) delete filter.price;
+        }
+
+        const data = await Product.find(filter);
+        res.json(data);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
 });
 
 // Get product by id

@@ -1,6 +1,50 @@
-<div class="container">
-    <button type="button" class="btn btn-outline-primary" (click)="getProducts()">Get Products</button>
-    <div class="list-group mt-2" *ngFor="let p of products">
-        <div class="list-group-item">{{p.name}}: {{p.price}}</div>
+<div class="crud-container">
+    <div class="left">
+        <h3>Update Product Info</h3>
+        <label>Name:</label>
+        <input class="form-control" [(ngModel)]="form.name" placeholder="Enter product name" />
+
+        <label class="mt-2">Price:</label>
+        <input type="number" class="form-control" [(ngModel)]="form.price" />
+
+        <div class="buttons">
+            <button class="btn btn-primary" (click)="submit()">{{ isEdit ? 'Update' : 'Submit' }}</button>
+            <button class="btn btn-secondary" (click)="reset()">Reset</button>
+        </div>
+        <div *ngIf="errMsg" class="error">{{ errMsg }}</div>
+    </div>
+
+    <div class="right">
+        <h3>Product List</h3>
+        <div class="filters mb-2">
+            <div style="display:flex;gap:8px;align-items:center;">
+                <input class="form-control" placeholder="Filter name" [(ngModel)]="filterName" />
+                <input class="form-control" type="number" placeholder="Min price" [(ngModel)]="filterMin" />
+                <input class="form-control" type="number" placeholder="Max price" [(ngModel)]="filterMax" />
+                <button class="btn btn-outline-primary" (click)="applyFilters()">Filter</button>
+                <button class="btn btn-outline-secondary" (click)="clearFilters()">Clear</button>
+            </div>
+        </div>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Name</th>
+                    <th>Price</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let p of products; index as i">
+                    <td>{{ i + 1 }}</td>
+                    <td>{{ p.name }}</td>
+                    <td>{{ p.price }}</td>
+                    <td class="actions">
+                        <button class="btn btn-sm btn-outline-primary" (click)="edit(p)">✎ Edit</button>
+                        <button class="btn btn-sm btn-outline-danger" (click)="delete(p)">🗑 Del</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
     </div>
 </div>
