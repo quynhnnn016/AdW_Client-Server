@@ -1,0 +1,6 @@
+<div class="container">
+    <button type="button" class="btn btn-outline-primary" (click)="getProducts()">Get Products</button>
+    <div class="list-group mt-2" *ngFor="let p of products">
+        <div class="list-group-item">{{p.name}}: {{p.price}}</div>
+    </div>
+</div>
